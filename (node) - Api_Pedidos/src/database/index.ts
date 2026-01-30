@@ -1,21 +1,19 @@
-import 'reflect-metadata'
-import { DataSource, type DataSourceOptions } from 'typeorm'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import "reflect-metadata";
+import { DataSource } from "typeorm";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-import ormConfigJson from '../config/ormconfig.json' with { type: 'json' }
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const ormConfig = ormConfigJson as unknown as DataSourceOptions
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export const AppDataSource = new DataSource({
-...ormConfig,
-  migrations: [path.join(__dirname, './migrations/*.{ts,js}')],
+  type: "sqlite",
+  database: path.join(__dirname, "database.sqlite"),
 
-})
+  entities: [path.join(__dirname, "./entity/*.{ts,js}")],
 
+  migrations: [path.join(__dirname, "./migrations/*.{ts,js}")],
 
-
+  synchronize: false,
+});
+// npm run typeorm:create -- src/database/migrations/Testeeefdsfsd
