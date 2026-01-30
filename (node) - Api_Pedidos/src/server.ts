@@ -1,5 +1,9 @@
+
 import app from "./app.js";
+import { AppDataSource } from "./database/index.js";
 import setupSwagger from "./docs/swagger.js";
+
+AppDataSource.initialize()
 
 const PORT = 3333;
 

@@ -7,6 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/server.ts",
+    "typeorm": "tsx  node_modules/typeorm/cli.js",
+
     "build": "tsc",
     "start": "node dist/server.js"
   },
@@ -16,8 +18,11 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.28",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
