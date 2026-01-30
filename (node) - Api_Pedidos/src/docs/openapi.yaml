@@ -5,41 +5,7 @@ info:
   description: Documentação da API
 
 paths:
-  /health:
-    get:
-      summary: Health check
-      responses:
-        200:
-          description: API online
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: ok
-
   /users:
-    get:
-      summary: Lista usuários
-      responses:
-        200:
-          description: Lista de usuários
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: number
-                      example: 1
-                    name:
-                      type: string
-                      example: Carlos
-
     post:
       summary: Cria um novo usuário
       requestBody:
@@ -54,6 +20,9 @@ paths:
                 name:
                   type: string
                   example: João
+                email:
+                  type: string
+                  example: João@gmail.com   
       responses:
         201:
           description: Usuário criado com sucesso
@@ -70,3 +39,4 @@ paths:
                     example: João
         400:
           description: Dados inválidos
+

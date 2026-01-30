@@ -1,32 +1,12 @@
 import { Router, type Response, type Request } from "express";
-
+import { UserController } from "../controllers/UserController.js";
 const router = Router();
 
-// GET /users
-router.get("/users", (_: Request, response: Response) => {
-  response.json([
-    { id: 1, name: "Carlos" },
-    { id: 2, name: "Maria" },
-  ]);
-});
 
-// POST /users
-router.post("/users", (request: Request, response: Response) => {
-  const { name } = request.body;
-
-  if (!name || typeof name !== "string") {
-    return response.status(400).json({
-      message: "Campo 'name' é obrigatório e deve ser uma string",
-    });
-  }
-
-  // mock de criação
-  const newUser = {
-    id: Date.now(),
-    name,
-  };
-
-  return response.status(201).json(newUser);
-});
-
+//USERCONTROLLER
+const userController = new UserController()
+router.post("/users",  userController.create);
+// router.get("/users", userController.getAll.bind(userController));
+// router.get("/users/:id", userController.getById.bind(userController));
+// router.delete("/users/:id", userController.deleteById.bind(userController));
 export default router;
