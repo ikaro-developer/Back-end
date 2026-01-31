@@ -1,24 +1,28 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
-import  { v7 as uuid} from 'uuid'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { v7 as uuid } from "uuid";
 @Entity("users")
-class User{
-     @PrimaryGeneratedColumn("uuid")
-    id!:string;
+class User {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
-    @Column("varchar")
-    name!:string;
-    
-    @Column("varchar")
-    email!:string;
+  @Column("varchar")
+  name!: string;
 
-    @CreateDateColumn()
-    created_at!:Date;
+  @Column("varchar")
+  email!: string;
 
-    constructor(){
-        if(!this.id){
-            this.id = uuid()
-        }
+  @CreateDateColumn()
+  created_at!: Date;
+
+  constructor() {
+    if (!this.id) {
+      this.id = uuid();
     }
-
+  }
 }
-export {User}
+export { User };
