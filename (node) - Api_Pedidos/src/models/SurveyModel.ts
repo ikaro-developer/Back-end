@@ -4,8 +4,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { v7 as uuid } from "uuid";
-@Entity("users")
+@Entity("surveys")
 class SurveyModel {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
@@ -18,11 +17,5 @@ class SurveyModel {
 
   @CreateDateColumn()
   created_at!: Date;
-
-  constructor() {
-    if (!this.id) {
-      this.id = uuid();
-    }
-  }
 }
 export { SurveyModel };

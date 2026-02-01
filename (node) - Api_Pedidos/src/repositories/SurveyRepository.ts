@@ -1,6 +1,5 @@
-// repositories/UserRepository.ts
-import { AppDataSource } from "../database/index.js";
-import { SurveyModel } from "../models/SurveyModel.js";
+import { AppDataSource } from "../database/index.ts";
+import { SurveyModel } from "../models/SurveyModel.ts";
 
 export const SurveyRepository = AppDataSource.getRepository(SurveyModel).extend(
   {

@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "verbatimModuleSyntax": false,
+    "isolatedModules": false,
+    "noEmit": false
+  }
+}

@@ -1,6 +1,5 @@
-// repositories/UserRepository.ts
-import { AppDataSource } from "../database/index.js";
-import { User } from "../models/UserModel.js";
+import { AppDataSource } from "../database/index.ts";
+import { User } from "../models/UserModel.ts";
 
 export const UsersRepository = AppDataSource.getRepository(User).extend({
   // Aqui você pode colocar métodos personalizados

@@ -4,7 +4,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { v7 as uuid } from "uuid";
 @Entity("users")
 class User {
   @PrimaryGeneratedColumn("uuid")
@@ -18,11 +17,5 @@ class User {
 
   @CreateDateColumn()
   created_at!: Date;
-
-  constructor() {
-    if (!this.id) {
-      this.id = uuid();
-    }
-  }
 }
 export { User };

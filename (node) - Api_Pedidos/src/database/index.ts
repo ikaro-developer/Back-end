@@ -1,21 +1,29 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { User } from "../models/UserModel.js";
+import fs from "node:fs";
+import { User } from "../models/UserModel.ts";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const rootDir = process.cwd();
+const isTest = process.env.NODE_ENV === "test";
+
+const dbDir = path.resolve(rootDir, "src/database");
+
+if (!isTest && !fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
+}
 
 export const AppDataSource = new DataSource({
   type: "sqlite",
-  database: path.join(__dirname, "database.sqlite"),
+
+  database: isTest ? ":memory:" : path.resolve(dbDir, "database.sqlite"),
 
   entities: [User],
 
-  migrations: [path.join(__dirname, "./migrations/*.{ts,js}")],
+  migrations: isTest
+    ? []
+    : [path.resolve(rootDir, "src/database/migrations/*.{ts,js}")],
 
-  synchronize: false,
-  logging:true
+  synchronize: isTest,
+  logging: false,
 });
-// npm run typeorm:create -- src/database/migrations/Testeeefdsfsd

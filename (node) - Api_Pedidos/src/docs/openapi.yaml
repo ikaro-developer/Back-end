@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: API Node + TypeScript
+  title: API Node (Express) + TypeScript + TypeORM + SQLITE + MVC + Swagger + Jest
   version: 1.0.0
   description: Documentação da API
 
@@ -22,7 +22,7 @@ paths:
                   example: João
                 email:
                   type: string
-                  example: João@gmail.com   
+                  example: joao@gmail.com
       responses:
         201:
           description: Usuário criado com sucesso
@@ -32,7 +32,7 @@ paths:
                 type: object
                 properties:
                   id:
-                    type: number
+                    type: string
                     example: 1700000000000
                   name:
                     type: string
@@ -40,3 +40,75 @@ paths:
         400:
           description: Dados inválidos
 
+  /survey:
+    post:
+      summary: Cria uma nova pesquisa
+      description: Endpoint para criar uma pesquisa (survey)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+              properties:
+                title:
+                  type: string
+                  example: Pesquisa de Satisfação
+                description:
+                  type: string
+                  example: Pesquisa para avaliar a satisfação dos clientes
+      responses:
+        201:
+          description: Pesquisa criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
+                  title:
+                    type: string
+                    example: Pesquisa de Satisfação
+                  description:
+                    type: string
+                    example: Pesquisa para avaliar a satisfação dos clientes
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: 2026-01-30T12:00:00.000Z
+        400:
+          description: Dados inválidos
+
+    get:
+      summary: Lista todas as pesquisas
+      description: Retorna uma lista com todas as pesquisas cadastradas
+      responses:
+        200:
+          description: Lista de pesquisas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      example: 550e8400-e29b-41d4-a716-446655440000
+                    title:
+                      type: string
+                      example: Pesquisa de Satisfação
+                    description:
+                      type: string
+                      example: Pesquisa para avaliar a satisfação dos clientes
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: 2026-01-30T12:00:00.000Z

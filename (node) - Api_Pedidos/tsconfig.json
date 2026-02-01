@@ -1,10 +1,13 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-  "experimentalDecorators": true,
-  "emitDecoratorMetadata": true,
-  "useDefineForClassFields": false,
-
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     // File Layout
     // "rootDir": "./src",
     // "outDir": "./dist",
@@ -14,7 +17,7 @@
     "module": "nodenext",
 
     "target": "esnext",
-    "types": ["node"],
+    "types": ["node", "jest"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -45,7 +48,6 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
-    
+    "skipLibCheck": true
   }
 }
