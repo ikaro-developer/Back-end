@@ -17,7 +17,9 @@ if (!isTest && !fs.existsSync(dbDir)) {
 export const AppDataSource = new DataSource({
   type: "sqlite",
 
-  database: isTest ? ":memory:" : path.resolve(dbDir, "database.sqlite"),
+  database: isTest
+    ? path.resolve(dbDir, "database.test.sqlite")
+    : path.resolve(dbDir, "database.sqlite"),
 
   entities: [User, SurveyModel],
 
@@ -28,3 +30,4 @@ export const AppDataSource = new DataSource({
   synchronize: isTest,
   logging: false,
 });
+//  npm run typeorm:create -- src/database/migrations/teste2
