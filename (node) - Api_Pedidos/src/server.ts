@@ -1,6 +1,7 @@
 import app from "./app.ts";
 import { AppDataSource } from "./database/index.ts";
 import setupSwagger from "./docs/swagger.ts";
+import "dotenv/config";
 
 const PORT = 3333;
 async function startServer() {

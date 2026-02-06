@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 @Entity("users")
-class User {
+class UserModel {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
@@ -18,4 +18,4 @@ class User {
   @CreateDateColumn()
   created_at!: Date;
 }
-export { User };
+export { UserModel };

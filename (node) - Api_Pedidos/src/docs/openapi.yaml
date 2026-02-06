@@ -1,11 +1,11 @@
 openapi: 3.0.0
 info:
   title: API Node (Express) + TypeScript + TypeORM + SQLITE + MVC + Swagger + Jest
-  version: 1.0.0
+  version: 1.1.0
   description: Documentação da API
 
 paths:
-  /users:
+  /user:
     post:
       summary: Cria um novo usuário
       requestBody:
@@ -112,3 +112,55 @@ paths:
                       type: string
                       format: date-time
                       example: 2026-01-30T12:00:00.000Z
+
+  /sendMail:
+    post:
+      summary: Envia um e-mail de pesquisa para o usuário
+      description: Endpoint para enviar e-mail com link de pesquisa (survey) para o usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - survey_id
+              properties:
+                email:
+                  type: string
+                  example: joao@gmail.com
+                survey_id:
+                  type: string
+                  format: uuid
+                  example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        200:
+          description: E-mail enviado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 660e8400-e29b-41d4-a716-446655441111
+                  user_id:
+                    type: string
+                    format: uuid
+                    example: 770e8400-e29b-41d4-a716-446655442222
+                  survey_id:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
+                  value:
+                    type: string
+                    nullable: true
+                    example: null
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: 2026-02-04T12:00:00.000Z
+        400:
+          description: Usuário ou survey não encontrado
