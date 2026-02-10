@@ -1,0 +1,30 @@
+@startuml
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+
+' Tabelas
+Table(users, "Tabela de Usuários") {
+  + id : UUID
+  + name : VARCHAR
+  + email : VARCHAR
+  + created_at : TIMESTAMP
+}
+
+Table(surveys, "Tabela de Pesquisas") {
+  + id : UUID
+  + title : VARCHAR
+  + description : VARCHAR
+  + created_at : TIMESTAMP
+}
+
+Table(surveys_users, "Tabela de Relacionamento entre Usuários e Pesquisas") {
+  + id : UUID
+  + user_id : UUID
+  + survey_id : UUID
+  + value : INTEGER
+  + created_at : TIMESTAMP
+}
+
+' Relacionamentos
+users ||--o{ surveys_users : "1:N"
+surveys ||--o{ surveys_users : "1:N"
+@enduml

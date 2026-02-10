@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import { UsersRepository } from "../repositories/UsersRepository.ts";
-
 class UserController {
   async create(request: Request, response: Response) {
     const { name, email } = request.body;

@@ -2,14 +2,15 @@
 
 Este projeto é uma **API REST** desenvolvida em **Node.js** utilizando **TypeScript**, **Express**, **TypeORM**, **SQLite**, arquitetura **MVC**, documentação com **Swagger** e **testes automatizados** com **Jest** e **Supertest**.
 
-O projeto foi construído com foco em **boas práticas**, **organização**, **isolamento de ambientes** (desenvolvimento e teste) e **facilidade de manutenção**.
-
 ---
 
 ## 🎯 Objetivo do Projeto
 
 - Criar usuários
 - Criar e listar pesquisas (Surveys)
+- Enviar e-mails com pesquisas para usuários
+- Registrar respostas de pesquisas
+- Calcular o NPS (Net Promoter Score)
 - Isolar banco de dados para testes
 - Documentar a API com Swagger
 - Garantir qualidade com testes automatizados
@@ -28,43 +29,65 @@ O projeto foi construído com foco em **boas práticas**, **organização**, **i
 - **Jest**
 - **Supertest**
 - **TSX**
+- **Nodemailer**
+- **Handlebars**
 
 ---
 
 ## 📁 Estrutura de Pastas
 
-src/
-├── tests/ # Testes automatizados
-│ └── User.test.ts
-│
-├── controllers/ # Controllers (regras de negócio)
-│ ├── UserController.ts
-│ └── SurveyController.ts
-│
-├── database/ # Configuração do banco de dados
-│ ├── index.ts # DataSource do TypeORM
-│ └── migrations/ # Migrations
-│
-├── docs/ # Documentação Swagger
-│ ├── swagger.ts
-│ └── openapi.yaml
-│
-├── models/ # Entidades (Models)
-│ ├── UserModel.ts
-│ └── SurveyModel.ts
-│
-├── repositories/ # Repositórios (acesso ao banco)
-│ ├── UsersRepository.ts
-│ └── SurveyRepository.ts
-│
-├── routes/ # Rotas
-│ ├── index.ts
-│ ├── user.routes.ts
-│ └── survey.routes.ts
-│
-├── app.ts # Configuração do Express
-└── server.ts # Inicialização do servidor
-
+```
+(node) - Api_Pedidos/
+├── .env
+├── .gitignore
+├── jest.config.cjs
+├── package.json
+├── readme.md
+├── tsconfig.json
+├── tsconfig.jest.json
+├── src/
+│   ├── app.ts
+│   ├── server.ts
+│   ├── __tests__/
+│   │   ├── Survey.test.ts
+│   │   └── User.test.ts
+│   ├── controllers/
+│   │   ├── AnswerController.ts
+│   │   ├── NpsController.ts
+│   │   ├── SendMailcontroller.ts
+│   │   ├── SurveyController.ts
+│   │   └── UserController.ts
+│   ├── database/
+│   │   ├── database.sqlite
+│   │   ├── index.ts
+│   │   └── migrations/
+│   │       ├── 1769822987806-CreateSurveys.ts
+│   │       ├── 1769736499325-CreateUsers.ts
+│   │       └── 1770178265569-CreateSurveyUsers.ts
+│   ├── docs/
+│   │   ├── openapi.yaml
+│   │   └── swagger.ts
+│   ├── models/
+│   │   ├── SurveyModel.ts
+│   │   ├── SurveyUserModel.ts
+│   │   └── UserModel.ts
+│   ├── repositories/
+│   │   ├── SurveyRepository.ts
+│   │   ├── SurveyUserRepository.ts
+│   │   └── UsersRepository.ts
+│   ├── routes/
+│   │   ├── answer.routes.ts
+│   │   ├── index.ts
+│   │   ├── nps.routes.ts
+│   │   ├── sendMail.routes.ts
+│   │   ├── survey.routes.ts
+│   │   └── user.routes.ts
+│   ├── services/
+│   │   └── SendMailServices.ts
+│   └── views/
+│       └── emails/
+│           └── npsMail.hbs
+```
 
 ---
 
@@ -74,12 +97,11 @@ O projeto utiliza **SQLite** com separação por ambiente.
 
 ### Desenvolvimento
 
-src/database/database.sqlite
-
+- Banco de dados: `src/database/database.sqlite`
 
 ### Testes
 
-src/database/database.test.sqlite
+- Banco de dados: `src/database/database.test.sqlite`
 
 A escolha do banco é feita automaticamente através da variável de ambiente:
 
@@ -89,79 +111,179 @@ const isTest = process.env.NODE_ENV === "test";
 database: isTest
   ? path.resolve(dbDir, "database.test.sqlite")
   : path.resolve(dbDir, "database.sqlite"),
+```
 
+### Entidades e Relacionamentos
 
+#### Tabelas
 
-🔁 Arquitetura MVC
+1. **users**
 
-Fluxo da aplicação:
+   - `id` (uuid, primary key)
+   - `name` (varchar)
+   - `email` (varchar)
+   - `created_at` (timestamp)
 
-Request → Route → Controller → Repository → Database
-Routes: definem os endpoints
+2. **surveys**
 
-Controllers: regras de negócio
+   - `id` (uuid, primary key)
+   - `title` (varchar)
+   - `description` (varchar)
+   - `created_at` (timestamp)
 
-Repositories: acesso ao banco
+3. **surveys_users**
+   - `id` (uuid, primary key)
+   - `user_id` (uuid, foreign key -> users.id)
+   - `survey_id` (uuid, foreign key -> surveys.id)
+   - `value` (integer, nullable)
+   - `created_at` (timestamp)
 
-Models: entidades do banco
+#### Relacionamentos
 
-🚏 Rotas da API
-👤 Usuários
+- **users** (1) ↔️ (N) **surveys_users**
+- **surveys** (1) ↔️ (N) **surveys_users**
 
-POST /user
+---
 
-Cria um novo usuário
+## 🚏 Rotas da API
 
+### 👤 Usuários
+
+#### POST `/user`
+
+**Descrição:** Cria um novo usuário.
+
+**Body:**
+
+```json
 {
   "name": "João",
   "email": "joao@gmail.com"
 }
-Respostas:
+```
 
-201 → Usuário criado
+**Respostas:**
 
-400 → Usuário já existe
+- `201`: Usuário criado com sucesso.
+- `400`: Usuário já existe.
 
-📊 Surveys
+---
 
-POST /survey
+### 📊 Surveys
 
+#### POST `/survey`
 
+**Descrição:** Cria uma nova pesquisa.
+
+**Body:**
+
+```json
 {
   "title": "Pesquisa de Satisfação",
   "description": "Avaliação dos clientes"
 }
-GET /survey
+```
 
-Retorna todas as pesquisas cadastradas.
+**Respostas:**
 
-📄 Swagger (Documentação)
+- `201`: Pesquisa criada com sucesso.
+- `400`: Dados inválidos.
+
+#### GET `/survey`
+
+**Descrição:** Retorna todas as pesquisas cadastradas.
+
+**Respostas:**
+
+- `200`: Lista de pesquisas.
+
+---
+
+### 📧 Envio de E-mails
+
+#### POST `/sendMail`
+
+**Descrição:** Envia um e-mail de pesquisa para o usuário.
+
+**Body:**
+
+```json
+{
+  "email": "joao@gmail.com",
+  "survey_id": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+**Respostas:**
+
+- `200`: E-mail enviado com sucesso.
+- `400`: Usuário ou pesquisa não encontrado.
+
+---
+
+### 📊 Respostas
+
+#### GET `/answers/:value`
+
+**Descrição:** Registra a resposta de um usuário para uma pesquisa.
+
+**Query Params:**
+
+- `u`: ID do usuário da pesquisa.
+
+**Respostas:**
+
+- `200`: Resposta registrada com sucesso.
+- `400`: Survey User não encontrado ou resposta inválida.
+
+---
+
+### 📈 NPS
+
+#### GET `/nps/:survey_id`
+
+**Descrição:** Calcula o NPS de uma pesquisa.
+
+**Respostas:**
+
+- `200`: NPS calculado com sucesso.
+- `400`: Survey não encontrado ou sem respostas.
+
+---
+
+## 📄 Swagger (Documentação)
 
 A documentação da API está disponível em:
 
+[http://localhost:3333/api-docs](http://localhost:3333/api-docs)
 
-http://localhost:3333/api-docs
 Ela é gerada a partir do arquivo:
 
-src/docs/openapi.yaml
+- [src/docs/openapi.yaml](src/docs/openapi.yaml)
 
+---
 
-🧪 Testes Automatizados
+## 🧪 Testes Automatizados
 
-Testes de integração com Jest e Supertest
+- Testes de integração com **Jest** e **Supertest**.
+- Banco de dados isolado para testes.
+- Testes não afetam o banco de desenvolvimento.
 
-Banco de dados isolado para testes
+### Rodar os testes:
 
-Testes não afetam o banco de desenvolvimento
-
-Rodar os testes:
-
+```bash
 npm test
+```
 
 Após os testes, o banco de testes é removido automaticamente com:
-"posttest": "rimraf ./src/database/database.test.sqlite"
 
-📜 Scripts Disponíveis
+```json
+"posttest": "rimraf ./src/database/database.test.sqlite"
+```
+
+---
+
+## 📜 Scripts Disponíveis
 
 | Script                   | Descrição                                  |
 | ------------------------ | ------------------------------------------ |
@@ -173,49 +295,54 @@ Após os testes, o banco de testes é removido automaticamente com:
 | `npm run typeorm:run`    | Executa migrations                         |
 | `npm run typeorm:revert` | Reverte migrations                         |
 
+---
 
-▶️ Como Executar o Projeto
-1️⃣ Instalar dependências
+## ▶️ Como Executar o Projeto
 
+1️⃣ Instalar dependências:
 
+```bash
 npm install
+```
 
-2️⃣ Rodar em desenvolvimento
+2️⃣ Rodar em desenvolvimento:
 
+```bash
 npm run dev
+```
 
-3️⃣ Rodar testes
+3️⃣ Rodar testes:
 
+```bash
 npm test
+```
 
+4️⃣ Build e produção:
 
-4️⃣ Build e produção
-
+```bash
 npm run build
 npm start
+```
 
-⚠️ Observações Importantes
+---
 
-NODE_ENV=test ativa o banco de testes
+## ⚠️ Observações Importantes
 
-cross-env garante compatibilidade entre Windows e Linux
+- `NODE_ENV=test` ativa o banco de testes.
+- `cross-env` garante compatibilidade entre Windows e Linux.
+- `rimraf` remove arquivos de forma multiplataforma.
+- `synchronize: true` é usado apenas em testes.
 
-rimraf remove arquivos de forma multiplataforma
+---
 
-synchronize: true é usado apenas em testes
-
-✅ Conclusão
+## ✅ Conclusão
 
 Este projeto fornece uma base sólida para APIs modernas em Node.js, com:
 
-Código organizado
-
-Arquitetura limpa
-
-Testes confiáveis
-
-Documentação clara
-
-Separação correta de ambientes
+- Código organizado.
+- Arquitetura limpa.
+- Testes confiáveis.
+- Documentação clara.
+- Separação correta de ambientes.
 
 Ideal para estudos, portfólio ou evolução para projetos maiores 🚀

@@ -164,3 +164,92 @@ paths:
                     example: 2026-02-04T12:00:00.000Z
         400:
           description: Usuário ou survey não encontrado
+  /answers/{value}:
+    get:
+      summary: Responde uma pesquisa
+      description: Registra a resposta de um usuário para uma pesquisa
+      parameters:
+        - name: value
+          in: path
+          required: true
+          description: Valor da resposta da pesquisa
+          schema:
+            type: integer
+            example: 5
+
+        - name: u
+          in: query
+          required: true
+          description: ID do usuário da pesquisa (survey_user)
+          schema:
+            type: string
+            format: uuid
+            example: 770e8400-e29b-41d4-a716-446655442222
+
+      responses:
+        200:
+          description: Resposta registrada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  user_id:
+                    type: string
+                    format: uuid
+                  survey_id:
+                    type: string
+                    format: uuid
+                  value:
+                    type: integer
+                    example: 5
+                  created_at:
+                    type: string
+                    format: date-time
+
+        400:
+          description: Survey User não encontrado ou resposta inválida
+
+  /nps/{survey_id}:
+    get:
+      summary: Calcula o NPS de uma pesquisa
+      description: Retorna o número de detratores, promotores, passivos, total de respostas e o NPS em percentual
+      parameters:
+        - name: survey_id
+          in: path
+          required: true
+          description: ID da pesquisa (survey)
+          schema:
+            type: string
+            format: uuid
+            example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        200:
+          description: NPS calculado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detractor:
+                    type: integer
+                    example: 2
+                  promoters:
+                    type: integer
+                    example: 5
+                  passive:
+                    type: integer
+                    example: 3
+                  totalAnswer:
+                    type: integer
+                    example: 10
+                  calculate:
+                    type: number
+                    format: float
+                    description: Percentual do NPS
+                    example: 30.0
+        400:
+          description: Survey não encontrado ou sem respostas
