@@ -1,0 +1,212 @@
+openapi: 3.0.0
+info:
+  title: API Node (Express) + TypeScript + TypeORM + SQLite + MVC + Swagger + Jest
+  version: 1.1.0
+  description: Documentação da API Settings
+
+paths:
+  /settings:
+    post:
+      summary: Cria uma nova configuração
+      tags:
+        - Settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - chat
+              properties:
+                username:
+                  type: string
+                  example: carlos
+                chat:
+                  type: boolean
+                  example: true
+      responses:
+        201:
+          description: Configuração criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
+                  username:
+                    type: string
+                    example: carlos
+                  chat:
+                    type: boolean
+                    example: true
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: 2026-02-16T20:00:00.000Z
+                  updated_at:
+                    type: string
+                    format: date-time
+                    example: 2026-02-16T20:00:00.000Z
+        400:
+          description: Dados inválidos
+        409:
+          description: Usuário já existe
+
+  /users:
+    post:
+      summary: Cria um novo usuário
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: carlos@email.com
+      responses:
+        201:
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
+                  email:
+                    type: string
+                    format: email
+                    example: carlos@email.com
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: 2026-02-16T20:00:00.000Z
+        400:
+          description: Dados inválidos
+        409:
+          description: Usuário já existe
+
+  /message:
+    post:
+      summary: Cria uma nova mensagem
+      tags:
+        - Messages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+                - user_id
+              properties:
+                admin_id:
+                  type: string
+                  format: uuid
+                  nullable: true
+                  example: 550e8400-e29b-41d4-a716-446655440000
+                text:
+                  type: string
+                  example: Olá, preciso de ajuda
+                user_id:
+                  type: string
+                  format: uuid
+                  example: 9b2c1a10-3c5d-4e8f-9a0b-123456789abc
+      responses:
+        200:
+          description: Mensagem criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
+                  admin_id:
+                    type: string
+                    format: uuid
+                    nullable: true
+                    example: null
+                  text:
+                    type: string
+                    example: Olá, preciso de ajuda
+                  user_id:
+                    type: string
+                    format: uuid
+                    example: 9b2c1a10-3c5d-4e8f-9a0b-123456789abc
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: 2026-02-18T22:00:00.000Z
+        400:
+          description: Dados inválidos
+        500:
+          description: Erro interno do servidor
+  /message/{id}:
+    get:
+      summary: Lista mensagens por usuário
+      tags:
+        - Messages
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do usuário (UUID)
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Lista de mensagens do usuário
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+        400:
+          description: ID inválido
+        500:
+          description: Erro interno do servidor
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        admin_id:
+          type: string
+          format: uuid
+          nullable: true
+          example: null
+        text:
+          type: string
+          example: Olá, preciso de ajuda
+        user_id:
+          type: string
+          format: uuid
+          example: 9b2c1a10-3c5d-4e8f-9a0b-123456789abc
+        created_at:
+          type: string
+          format: date-time
+          example: 2026-02-18T22:00:00.000Z

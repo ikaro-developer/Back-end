@@ -1,0 +1,7 @@
+import { Router } from "express";
+import { UsersController } from "../controllers/UsersController.ts";
+
+const router = Router();
+const usersController = new UsersController();
+router.post("/users", usersController.create);
+export default router;

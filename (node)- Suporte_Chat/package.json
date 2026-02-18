@@ -1,12 +1,37 @@
 {
-  "name": "(node)--suporte_chat",
+  "name": "node_suporte_chat",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/server.ts",
+    "typeorm": "tsx ./node_modules/typeorm/cli.js ",
+    "typeorm:run": "tsx ./node_modules/typeorm/cli.js migration:run -d src/database/index.ts",
+    "typeorm:revert": "tsx ./node_modules/typeorm/cli.js migration:revert -d src/database/index.ts",
+    "typeorm:generate": "tsx ./node_modules/typeorm/cli.js migration:generate -d src/database/index.ts",
+    "typeorm:create": "tsx ./node_modules/typeorm/cli.js migration:create"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.28",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@types/yamljs": "^0.2.34",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
 }
