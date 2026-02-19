@@ -21,6 +21,11 @@ class UsersServices {
 
     return settings;
   }
+
+  async findByEmail({ email }: UsersServicesProps) {
+    const userAlreadyExists = await UsersRepository.UsersAlreadyExists(email);
+    return userAlreadyExists;
+  }
 }
 
 export { UsersServices };

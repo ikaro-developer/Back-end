@@ -1,4 +1,7 @@
-import app from "./app.ts";
+import { app, http } from "./app.ts";
+import "./websocket/client.ts";
+import "./websocket/admin.ts";
+
 import { AppDataSource } from "./database/index.ts";
 import setupSwagger from "./docs/swagger.ts";
 
@@ -9,7 +12,7 @@ async function startServer() {
     console.log("Data Source initialized");
     setupSwagger(app);
 
-    app.listen(PORT, () => {
+    http.listen(PORT, () => {
       console.log(`Server running at http://localhost:${PORT}`);
       console.log(`Swagger at http://localhost:${PORT}/api-docs`);
     });

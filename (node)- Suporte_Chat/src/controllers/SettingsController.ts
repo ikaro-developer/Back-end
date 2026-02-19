@@ -19,6 +19,28 @@ class SettingsController {
       });
     }
   }
+
+  async findByUsername(request: Request, response: Response) {
+    const { username } = request.params as any;
+    const settingsServices = new SettingsServices();
+
+    if (!username) {
+      return response.status(400).json({ error: "username não fornecido" });
+    }
+
+    const settings = await settingsServices.findByUsername(username);
+    return response.json(settings);
+  }
+
+  async update(request: Request, response: Response) {
+    const { username } = request.params as any;
+    const { chat } = request.body;
+
+    const settingsServices = new SettingsServices();
+
+    const settings = await settingsServices.update(username, chat);
+    return response.json(settings);
+  }
 }
 
 export { SettingsController };

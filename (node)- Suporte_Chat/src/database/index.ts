@@ -5,6 +5,7 @@ import fs from "node:fs";
 import { SettingsModel } from "../models/SettingsModel.ts";
 import { UsersModel } from "../models/UsersModel.ts";
 import { MessageModel } from "../models/MessageModel.ts";
+import { ConnectionModel } from "../models/ConnectionModel.ts";
 
 const rootDir = process.cwd();
 const isTest = process.env.NODE_ENV === "test";
@@ -22,7 +23,7 @@ export const AppDataSource = new DataSource({
     ? path.resolve(dbDir, "database.test.sqlite")
     : path.resolve(dbDir, "database.sqlite"),
 
-  entities: [SettingsModel, UsersModel, MessageModel],
+  entities: [SettingsModel, UsersModel, MessageModel, ConnectionModel],
 
   migrations: isTest
     ? []

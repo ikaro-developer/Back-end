@@ -5,10 +5,11 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { UsersModel } from "./UsersModel.ts";
-@Entity("messages")
-class MessageModel {
+@Entity("connections")
+class ConnectionModel {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
@@ -16,7 +17,7 @@ class MessageModel {
   admin_id?: string;
 
   @Column("varchar")
-  text!: string;
+  socket_id!: string;
 
   @Column("uuid")
   user_id!: string;
@@ -27,5 +28,8 @@ class MessageModel {
 
   @CreateDateColumn()
   created_at!: Date;
+
+  @UpdateDateColumn()
+  updated_at!: Date;
 }
-export { MessageModel };
+export { ConnectionModel };
