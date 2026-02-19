@@ -1,0 +1,40 @@
+@startuml
+package "Models" {
+    class User {
+        +id: UUID
+        +email: string
+        +created_at: Date
+    }
+
+    class Settings {
+        +id: UUID
+        +username: string
+        +chat: boolean
+        +created_at: Date
+        +updated_at: Date
+    }
+
+    class Message {
+        +id: UUID
+        +text: string
+        +admin_id: UUID
+        +user_id: UUID
+        +created_at: Date
+    }
+
+    class Connection {
+        +id: UUID
+        +socket_id: string
+        +user_id: UUID
+        +admin_id: UUID
+        +created_at: Date
+        +updated_at: Date
+    }
+}
+
+User "1" -- "0..*" Connection
+User "1" -- "0..*" Message
+Connection "1" -- "1" User
+Connection "0..1" -- "1" Message
+Settings "1" -- "1" User
+@enduml
