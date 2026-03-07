@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  title: API Node (Express) + TypeScript + TypeORM + SQLITE + MVC + Swagger + Jest
+  version: 1.1.0
+  description: Documentação da API
+
+paths:
+  /user:
+    post:
+      summary: Cria um novo usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: João
+                email:
+                  type: string
+                  example: joao@gmail.com
+      responses:
+        201:
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 1700000000000
+                  name:
+                    type: string
+                    example: João
+        400:
+          description: Dados inválidos
+
+  /survey:
+    post:
+      summary: Cria uma nova pesquisa
+      description: Endpoint para criar uma pesquisa (survey)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+              properties:
+                title:
+                  type: string
+                  example: Pesquisa de Satisfação
+                description:
+                  type: string
+                  example: Pesquisa para avaliar a satisfação dos clientes
+      responses:
+        201:
+          description: Pesquisa criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
+                  title:
+                    type: string
+                    example: Pesquisa de Satisfação
+                  description:
+                    type: string
+                    example: Pesquisa para avaliar a satisfação dos clientes
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: 2026-01-30T12:00:00.000Z
+        400:
+          description: Dados inválidos
+
+    get:
+      summary: Lista todas as pesquisas
+      description: Retorna uma lista com todas as pesquisas cadastradas
+      responses:
+        200:
+          description: Lista de pesquisas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                      example: 550e8400-e29b-41d4-a716-446655440000
+                    title:
+                      type: string
+                      example: Pesquisa de Satisfação
+                    description:
+                      type: string
+                      example: Pesquisa para avaliar a satisfação dos clientes
+                    created_at:
+                      type: string
+                      format: date-time
+                      example: 2026-01-30T12:00:00.000Z
+
+  /sendMail:
+    post:
+      summary: Envia um e-mail de pesquisa para o usuário
+      description: Endpoint para enviar e-mail com link de pesquisa (survey) para o usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - survey_id
+              properties:
+                email:
+                  type: string
+                  example: joao@gmail.com
+                survey_id:
+                  type: string
+                  format: uuid
+                  example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        200:
+          description: E-mail enviado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 660e8400-e29b-41d4-a716-446655441111
+                  user_id:
+                    type: string
+                    format: uuid
+                    example: 770e8400-e29b-41d4-a716-446655442222
+                  survey_id:
+                    type: string
+                    format: uuid
+                    example: 550e8400-e29b-41d4-a716-446655440000
+                  value:
+                    type: string
+                    nullable: true
+                    example: null
+                  created_at:
+                    type: string
+                    format: date-time
+                    example: 2026-02-04T12:00:00.000Z
+        400:
+          description: Usuário ou survey não encontrado
+  /answers/{value}:
+    get:
+      summary: Responde uma pesquisa
+      description: Registra a resposta de um usuário para uma pesquisa
+      parameters:
+        - name: value
+          in: path
+          required: true
+          description: Valor da resposta da pesquisa
+          schema:
+            type: integer
+            example: 5
+
+        - name: u
+          in: query
+          required: true
+          description: ID do usuário da pesquisa (survey_user)
+          schema:
+            type: string
+            format: uuid
+            example: 770e8400-e29b-41d4-a716-446655442222
+
+      responses:
+        200:
+          description: Resposta registrada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  user_id:
+                    type: string
+                    format: uuid
+                  survey_id:
+                    type: string
+                    format: uuid
+                  value:
+                    type: integer
+                    example: 5
+                  created_at:
+                    type: string
+                    format: date-time
+
+        400:
+          description: Survey User não encontrado ou resposta inválida
+
+  /nps/{survey_id}:
+    get:
+      summary: Calcula o NPS de uma pesquisa
+      description: Retorna o número de detratores, promotores, passivos, total de respostas e o NPS em percentual
+      parameters:
+        - name: survey_id
+          in: path
+          required: true
+          description: ID da pesquisa (survey)
+          schema:
+            type: string
+            format: uuid
+            example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        200:
+          description: NPS calculado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detractor:
+                    type: integer
+                    example: 2
+                  promoters:
+                    type: integer
+                    example: 5
+                  passive:
+                    type: integer
+                    example: 3
+                  totalAnswer:
+                    type: integer
+                    example: 10
+                  calculate:
+                    type: number
+                    format: float
+                    description: Percentual do NPS
+                    example: 30.0
+        400:
+          description: Survey não encontrado ou sem respostas
