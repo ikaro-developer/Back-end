@@ -1,5 +1,7 @@
 import { DataSource } from "typeorm"
 import path from "node:path";
+import UsersModel from "@/models/UsersModel.ts";
+import TagsModel from "@/models/TagsModel.ts";
 
 
 const rootDir = process.cwd();
@@ -9,9 +11,9 @@ export const AppDataSource = new DataSource({
 
     type: "sqlite",
     database: path.resolve(dbDir, "database.sqlite"),
-    // entities: [
-    //     "./src/entities/**/*.ts"
-    // ],
+    entities: [
+        UsersModel, TagsModel
+    ],
     migrations: [path.resolve(rootDir, "src/database/migrations/*.{ts,js}")],
     logging: true,
     synchronize: true,
@@ -19,4 +21,4 @@ export const AppDataSource = new DataSource({
 
 })
 
-//  npm run typeorm:create -- src/database/migrations/teste2
+//  npm run typeorm:create -- src/database/migrations/

@@ -1,24 +1,28 @@
+
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity("users")
 export class UsersModel {
     @PrimaryGeneratedColumn("uuid")
-    id: string;
+    id!: string;
 
-    @Column()
-    name: string;
+    @Column("varchar")
+    name!: string;
 
-    @Column({ unique: true })
-    email: string;
+    @Column({ type: "varchar", unique: true })
+    email!: string;
+    
+    @Column("varchar")
+    password!: string;
 
-    @Column({ default: false })
-    admin: boolean;
+    @Column({ type: "boolean", default: false })
+    admin!: boolean;
 
     @CreateDateColumn()
-    created_at: Date;
+    created_at!: Date;
 
     @UpdateDateColumn()
-    updated_at: Date;
+    updated_at!: Date;
 }
 
 export default UsersModel;
