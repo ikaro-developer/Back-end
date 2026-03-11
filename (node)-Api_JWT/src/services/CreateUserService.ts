@@ -1,15 +1,15 @@
 import { UsersRepository } from "@/repositories/UsersRepositories.ts"
+import { hash } from "bcryptjs"
 
-interface PropsCreateUser{
+interface PropsCreateUser {
     name: string,
     email: string,
-    admin:boolean
-    }
+    admin: boolean,
+    password: string
+}
 
-class CreateUserService{
-    async execute({ name, email, admin }: PropsCreateUser) {
-        
-
+class UserService {
+    async CreateUser({ name, email, admin, password }: PropsCreateUser) {
         if (!email) {
             throw new Error("Emai incorrect")
         }
@@ -19,11 +19,13 @@ class CreateUserService{
             throw new Error("User already exists")
 
         }
+        const passwordHash: string = await hash(password, 8)
 
         const user = await UsersRepository.UserCreate(
             name,
             email,
-            admin
+            admin,
+            passwordHash
         )
 
         return user
@@ -32,4 +34,4 @@ class CreateUserService{
     }
 }
 
-export {CreateUserService}
+export { UserService }

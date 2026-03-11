@@ -1,6 +1,146 @@
 openapi: 3.0.0
 info:
-  title: API Node + TS
+  title: API Node + TypeScript
+  description: API de gerenciamento de usuários, autenticação e tags
   version: 1.0.0
+
 servers:
   - url: http://localhost:3333
+
+tags:
+  - name: Users
+    description: Gerenciamento de usuários
+  - name: Auth
+    description: Autenticação
+  - name: Tags
+    description: Gerenciamento de tags
+
+paths:
+
+  /users:
+    post:
+      summary: Criar usuário
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - admin
+              properties:
+                name:
+                  type: string
+                  example: João Silva
+                email:
+                  type: string
+                  example: joao@email.com
+                password:
+                  type: string
+                  example: "123456"
+                admin:
+                  type: boolean
+                  example: false
+      responses:
+        200:
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "1"
+                  name:
+                    type: string
+                    example: João Silva
+                  email:
+                    type: string
+                    example: joao@email.com
+                  admin:
+                    type: boolean
+                    example: false
+        400:
+          description: Erro na requisição
+        500:
+          description: Erro interno do servidor
+
+  /login:
+    post:
+      summary: Autenticar usuário
+      description: Retorna um token JWT para acesso à API
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: joao@email.com
+                password:
+                  type: string
+                  example: "123456"
+      responses:
+        200:
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        401:
+          description: Email ou senha incorretos
+        500:
+          description: Erro interno do servidor
+
+  /tags:
+    post:
+      summary: Criar tag
+      tags:
+        - Tags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: tecnologia
+      responses:
+        200:
+          description: Tag criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "1"
+                  name:
+                    type: string
+                    example: tecnologia
+        400:
+          description: Erro na requisição
+        500:
+          description: Erro interno do servidor
