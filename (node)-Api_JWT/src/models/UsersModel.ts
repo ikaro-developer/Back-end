@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 @Entity("users")
 export class UsersModel {
     @PrimaryGeneratedColumn("uuid")
-    id!: string;
+    readonly id!: string;
 
     @Column("varchar")
     name!: string;

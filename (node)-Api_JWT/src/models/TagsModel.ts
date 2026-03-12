@@ -3,7 +3,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 @Entity("tags")
 class TagsModel {
     @PrimaryGeneratedColumn("uuid")
-    id!: string;
+    readonly id!: string;
 
     @Column("varchar")
     name!: string;
