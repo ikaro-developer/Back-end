@@ -9,7 +9,7 @@ interface PropsCreateUser {
 }
 
 class UserService {
-    async CreateUser({ name, email, admin, password }: PropsCreateUser) {
+    async CreateUser({ name, email, admin=false, password }: PropsCreateUser) {
         if (!email) {
             throw new Error("Emai incorrect")
         }

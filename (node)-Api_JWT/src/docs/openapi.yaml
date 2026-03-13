@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: API Node + TypeScript
-  description: API de gerenciamento de usuários, autenticação e tags
+  description: API de gerenciamento de usuários, autenticação, tags e elogios
   version: 1.0.0
 
 servers:
@@ -14,7 +14,16 @@ tags:
     description: Autenticação
   - name: Tags
     description: Gerenciamento de tags
+  - name: Compliments
+    description: Envio de elogios entre usuários
 
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 paths:
 
   /users:
@@ -49,23 +58,6 @@ paths:
       responses:
         200:
           description: Usuário criado com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: "1"
-                  name:
-                    type: string
-                    example: João Silva
-                  email:
-                    type: string
-                    example: joao@email.com
-                  admin:
-                    type: boolean
-                    example: false
         400:
           description: Erro na requisição
         500:
@@ -96,14 +88,6 @@ paths:
       responses:
         200:
           description: Login realizado com sucesso
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         401:
           description: Email ou senha incorretos
         500:
@@ -114,6 +98,8 @@ paths:
       summary: Criar tag
       tags:
         - Tags
+      security:
+      - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -129,6 +115,44 @@ paths:
       responses:
         200:
           description: Tag criada com sucesso
+        400:
+          description: Erro na requisição
+        500:
+          description: Erro interno do servidor
+
+  /compliments:
+    post:
+      summary: Enviar elogio para um usuário
+      description: Permite que um usuário envie um elogio para outro usuário com uma tag
+      tags:
+        - Compliments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_sender
+                - user_receiver
+                - tag_id
+                - message
+              properties:
+                user_sender:
+                  type: string
+                  example: "uuid-user-sender"
+                user_receiver:
+                  type: string
+                  example: "uuid-user-receiver"
+                tag_id:
+                  type: string
+                  example: "uuid-tag"
+                message:
+                  type: string
+                  example: "Excelente trabalho em equipe!"
+      responses:
+        200:
+          description: Elogio enviado com sucesso
           content:
             application/json:
               schema:
@@ -136,10 +160,19 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: "1"
-                  name:
+                    example: "uuid-compliment"
+                  user_sender:
                     type: string
-                    example: tecnologia
+                  user_receiver:
+                    type: string
+                  tag_id:
+                    type: string
+                  message:
+                    type: string
+                  created_at:
+                    type: string
+                    example: "2026-03-12T10:00:00.000Z"
+
         400:
           description: Erro na requisição
         500:
