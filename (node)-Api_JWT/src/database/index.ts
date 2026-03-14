@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
     database: path.resolve(dbDir, "database.sqlite"),
     entities: [UsersModel, TagsModel, ComplimentsModel],
     migrations: [path.resolve(rootDir, "src/database/migrations/*.{ts,js}")],
-    logging: true,
+    // logging: true,
     synchronize: true,
 
 

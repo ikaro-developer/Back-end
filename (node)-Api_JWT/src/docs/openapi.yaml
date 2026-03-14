@@ -10,13 +10,15 @@ servers:
 tags:
   - name: Users
     description: Gerenciamento de usuários
+
   - name: Auth
     description: Autenticação
+
   - name: Tags
     description: Gerenciamento de tags
-  - name: Compliments
-    description: Envio de elogios entre usuários
 
+  - name: Compliments
+    description: Envio e consulta de elogios entre usuários
 
 components:
   securitySchemes:
@@ -24,6 +26,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
 paths:
 
   /users:
@@ -58,15 +61,26 @@ paths:
       responses:
         200:
           description: Usuário criado com sucesso
-        400:
-          description: Erro na requisição
-        500:
-          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  admin:
+                    type: boolean
+                  created_at:
+                    type: string
 
   /login:
     post:
       summary: Autenticar usuário
-      description: Retorna um token JWT para acesso à API
+      description: Retorna um token JWT
       tags:
         - Auth
       requestBody:
@@ -81,17 +95,32 @@ paths:
               properties:
                 email:
                   type: string
-                  example: joao@email.com
+                  example: "user@email.com"
                 password:
                   type: string
                   example: "123456"
       responses:
         200:
           description: Login realizado com sucesso
-        401:
-          description: Email ou senha incorretos
-        500:
-          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      admin:
+                        type: boolean
+                  token:
+                    type: string
+                    example: "jwt-token"
 
   /tags:
     post:
@@ -99,7 +128,7 @@ paths:
       tags:
         - Tags
       security:
-      - bearerAuth: []
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -111,21 +140,55 @@ paths:
               properties:
                 name:
                   type: string
-                  example: tecnologia
+                  example: liderança
       responses:
         200:
           description: Tag criada com sucesso
-        400:
-          description: Erro na requisição
-        500:
-          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                
+
+    /tags:
+    get:
+      summary: Listar todas as tags
+      description: Retorna todas as tags cadastradas no sistema
+      tags:
+        - Tags
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Lista de tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "uuid-tag"
+                    name:
+                      type: string
+                      example: liderança
+        401:
+          description: Token inválido ou não informado
 
   /compliments:
     post:
-      summary: Enviar elogio para um usuário
-      description: Permite que um usuário envie um elogio para outro usuário com uma tag
+      summary: Enviar elogio
       tags:
         - Compliments
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -133,23 +196,16 @@ paths:
             schema:
               type: object
               required:
-                - user_sender
                 - user_receiver
                 - tag_id
                 - message
               properties:
-                user_sender:
-                  type: string
-                  example: "uuid-user-sender"
                 user_receiver:
                   type: string
-                  example: "uuid-user-receiver"
                 tag_id:
                   type: string
-                  example: "uuid-tag"
                 message:
                   type: string
-                  example: "Excelente trabalho em equipe!"
       responses:
         200:
           description: Elogio enviado com sucesso
@@ -160,20 +216,61 @@ paths:
                 properties:
                   id:
                     type: string
-                    example: "uuid-compliment"
+                  message:
+                    type: string
                   user_sender:
                     type: string
                   user_receiver:
                     type: string
                   tag_id:
                     type: string
-                  message:
-                    type: string
                   created_at:
                     type: string
-                    example: "2026-03-12T10:00:00.000Z"
 
-        400:
-          description: Erro na requisição
-        500:
-          description: Erro interno do servidor
+  /user/compliments/send:
+    get:
+      summary: Listar elogios enviados
+      tags:
+        - Compliments
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Lista de elogios enviados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    message:
+                      type: string
+                    created_at:
+                      type: string
+
+  /user/compliments/receive:
+    get:
+      summary: Listar elogios recebidos
+      tags:
+        - Compliments
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Lista de elogios recebidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    message:
+                      type: string
+                    created_at:
+                      type: string
