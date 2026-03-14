@@ -1,38 +1,32 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import  TagsModel from "./TagsModel.ts";
-import  UsersModel from "./UsersModel.ts";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import TagsModel from "./TagsModel.ts";
+import UsersModel from "./UsersModel.ts";
 
 
 @Entity("compliments")
 class ComplimentsModel {
-    @PrimaryColumn("uuid")
+    @PrimaryGeneratedColumn("uuid")
     readonly id!: string;
 
-    @Column("uuid")
-    user_sender!: string;
-
+    @ManyToOne(() => UsersModel)
     @JoinColumn({ name: "user_sender" })
-    userSender!:UsersModel;
+    userSender!: UsersModel;
+
+
     @ManyToOne(() => UsersModel)
-
-    @Column("uuid")
-    user_receiver!: string;
-
     @JoinColumn({ name: "user_receiver" })
-    userReceiver!:UsersModel;
-    @ManyToOne(() => UsersModel)
+    userReceiver!: UsersModel;
 
-    @Column("uuid")
-    tag_id!: string;
 
-    @JoinColumn({ name: "tag_id" })
-    tag!:TagsModel;
     @ManyToOne(() => TagsModel)
+    @JoinColumn({ name: "tag_id" })
+    tag!: TagsModel;
+
 
     @Column("varchar")
     message!: string;
 
-    @CreateDateColumn("timestamp")
+    @CreateDateColumn()
     created_at!: Date;
 
 }

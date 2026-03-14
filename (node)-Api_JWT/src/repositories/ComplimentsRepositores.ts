@@ -3,22 +3,20 @@ import { ComplimentsModel } from "@/models/ComplimentsModel.ts";
 
 
 export const ComplimentsRepository = AppDataSource.getRepository(ComplimentsModel).extend({
-    
 
-        async receiverExist(user_receiver: string) {
-        return this.findOne({
-            where: { user_receiver }
+    async createCompliment(
+        user_sender: string,
+        user_receiver: string,
+        tag_id: string,
+        message: string,
+    ) {
+
+        const compliment = this.create({
+            userSender: { id: user_sender },
+            userReceiver: { id: user_receiver },
+            tag: { id: tag_id },
+            message,
         });
-    },
-
-        async createCompliment(data: {
-        user_sender: string;
-        user_receiver: string;
-        tag_id: string;
-        message: string;
-    }) {
-
-        const compliment = this.create(data);
 
         return await this.save(compliment);
     }
